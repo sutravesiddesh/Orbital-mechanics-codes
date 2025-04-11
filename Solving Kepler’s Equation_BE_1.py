@@ -143,3 +143,19 @@ if __name__ == "__main__":
     eclipse_duration = eclipse_time(theta1, theta2, e, n,tp)
     print(f"Periapsis eclipse duration: {eclipse_duration[0]} minutes, Apoapsis eclipse duration: {eclipse_duration[1]} minutes")
     print(f"Periapsis angle: {theta1}, Apoapsis angle: {theta2}")
+
+    # theta1= 140 *np.pi/180
+    # theta2= 220 *np.pi/180
+    # e = 0.7
+    # t_side = 43080
+
+    # n = 2*np.pi/t_side
+    # E1 = 2*np.arctan(np.tan(theta1/2)*np.sqrt((1-e)/(1+e)))
+    # E2 = 2*np.arctan(np.tan(theta2/2)*np.sqrt((1-e)/(1+e)))
+    # M1 = E1 - e*np.sin(E1)
+    # M2 = E2 - e*np.sin(E2)
+    # time = (t_side - M1/n + M2/n)/3600
+    # print(E1, E2, M1, M2)
+    # print(f"Time between angles {theta1} and {theta2}: {time} minutes") 
+    
+
