@@ -123,7 +123,7 @@ if __name__ == "__main__":
     time_period = 2 * np.pi * np.sqrt(a**3 / u)
     print("Semi-major axis (a):", a)
     print("Inclination (i):", i)
-    print("Time period (T):", time_period)
+    print("Time period (T):", time_period/60, "minutes")
 
     # Plot radial distance vs. time
     plt.plot(time1, radius1, label="Radial Distance (km)", color="blue")
