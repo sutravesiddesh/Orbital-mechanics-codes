@@ -26,50 +26,68 @@ if __name__ == "__main__":
     X_iss = np.array([x_iss, y_iss, z_iss, vx_iss, vy_iss, vz_iss])
     a_iss = R_E + altitude
     tp_iss = (2 * np.pi * np.sqrt(a_iss**3 / u) )
+    x_center, y_center = 0, 0
 
-    print("Period of ISS: ", tp_iss/3600, " hours")
+    print(f"Period of ISS: {tp_iss/3600:.2f}  hours")
 
-    t_eval = np.arange(0, 5*tp_iss, 10)
+    t_eval = np.arange(0, 15*tp_iss, 10)
     two_body(t_eval, X_iss)
-    sol_iss = solve_ivp(two_body, [0, 5*tp_iss], X_iss, t_eval=t_eval, method='RK45', rtol=1e-12, atol=1e-12)
+    sol_iss = solve_ivp(two_body, [0, 15*tp_iss], X_iss, t_eval=t_eval, method='RK45', rtol=1e-12, atol=1e-12)
     x_iss = sol_iss.y[0]
     y_iss = sol_iss.y[1]
     z_iss = sol_iss.y[2]
 
-    plt.plot(x_iss, y_iss)
-    plt.xlabel('x (km)')
-    plt.ylabel('y (km)')
-    plt.title('ISS Orbit - One Period')
-    plt.gca().set_aspect('equal')
-    plt.grid()
-    plt.show()
-
     N_rev = 12
     a_chaser = a_iss * (1 - (theta / (2 * np.pi * N_rev)))**(2/3)
     e_chaser = a_iss / a_chaser - 1
-    r_periapsis = a_chaser * (1 - e_chaser)
-    v_chaser = np.sqrt(u*((2/r_periapsis) - (1/a_chaser)))
-    print("Semi-major axis of chaser: ", a_chaser)
-    print("Eccentricity of chaser: ", e_chaser)
+    
+    v_chaser = np.sqrt(u*((2/r_iss) - (1/a_chaser)))
+    print(f"Semi-major axis of chaser: {a_chaser:.2f} km")
+    print(f"Eccentricity of chaser: {e_chaser:.2f}")
 
-    x_chaser = a_chaser
+    x_chaser = r_iss
     y_chaser = 0
     z_chaser = 0
     vx_chaser = 0
     vy_chaser = v_chaser
     vz_chaser = 0
     tp_chaser = (2 * np.pi * np.sqrt(a_chaser**3 / u) )
-    X_chaser = np.array([x_chaser, y_chaser, z_chaser, vx_chaser, v_chaser, vz_chaser])
-
-    sol_chaser = solve_ivp(two_body, [0, 5*tp_iss], X_chaser, t_eval=t_eval, method='RK45', rtol=1e-12, atol=1e-12)
+    X_chaser = np.array([x_chaser, y_chaser, z_chaser, vx_chaser, vy_chaser, vz_chaser])
+    print(X_chaser)
+    sol_chaser = solve_ivp(two_body, [0, 15*tp_iss], X_chaser, t_eval=t_eval, method='RK45', rtol=1e-12, atol=1e-12)
     x_chaser, y_chaser, z_chaser = sol_chaser.y[0], sol_chaser.y[1], sol_chaser.y[2]
-    
+
     distance = np.sqrt((x_iss - x_chaser)**2 + (y_iss - y_chaser)**2 + (z_iss - z_chaser)**2)
-    plt.plot(t_eval, distance)
-    plt.xlabel('Time (s)')
-    plt.ylabel('Distance (km)')
-    plt.title('Distance Between ISS and Chaser Over Time')
+ 
+    plt.plot(x_iss, y_iss, label="ISS Orbit")
+    plt.plot(x_chaser, y_chaser, label="Chaser Orbit", linestyle='--')
+    plt.scatter(x_iss[0], y_iss[0], color='red', label="Initial Point ISS", zorder=5, marker='o') 
+    plt.scatter(x_chaser[0], y_chaser[0], color='red', label="Initial Point Chaser", zorder=5, marker='*')  
+    circle = plt.Circle((x_center, y_center), R_E, color='green', fill=True)
+    ax = plt.gca()  
+    ax.add_patch(circle)
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlabel('x (km)')
+    plt.ylabel('y (km)')
+    plt.title('ISS and Chaser Orbits')
+    plt.legend()
+    plt.legend(loc="upper right") 
     plt.grid()
+    plt.show() 
+ 
+ 
+ 
+    plt.plot(t_eval/tp_chaser, distance)
+    plt.xlabel('Number of Orbit')
+    plt.ylabel('Distance (km)')
+    plt.title('Distance Between ISS and Chaser')
+    plt.grid()
+
+
+    zero_distance_index = np.argmin(distance)  
+    plt.scatter(t_eval[zero_distance_index]/tp_chaser, distance[zero_distance_index], color='red', label='Zero Distance', zorder=5, marker='o')
+
+    plt.legend()
     plt.show()
 
     v_iss = np.sqrt(u/r_iss)
