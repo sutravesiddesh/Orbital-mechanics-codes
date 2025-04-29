@@ -84,7 +84,7 @@ def theta(e,p,a,R_E):
         r = radial_distance(angle, a)
         x = (r) * np.cos(angle)
         y = (r) * np.sin(angle)
-        plt.scatter(x, y, color=color, marker=marker,s=100, label=f"θ={angle:.2f} rad")
+        plt.scatter(x, y, color=color, marker=marker,s=100, label=f"0={angle:.2f} rad")
     
     return angles, theta1, theta2
 
@@ -102,15 +102,28 @@ def eclipse_time(theta1,theta2,e,n,tp):
     return periapsis_eclipse_time, apoapsis_eclipse_time
 
 if __name__ == "__main__":
-    # M = 21*(np.pi/180)
-    # #M = 1.792 
+   
+#    Input for 1a, 1b
+
+    # # M = 21*(np.pi/180)
+    # M = 180*(np.pi/180) 
     # e = 0.25
     # tol = 1e-12
-    # a = 24000
+    
     # E, no_iter = Kepler(M,e,tol)
     # theta = true_anomaly(E)
+    # # print(f"Eccentric anomaly: {E:.2f} rad")
+    # # print(f"Number of iterations: {no_iter}")
+    # a = 24000
     # r = radial_distance(theta,a)
+    # print(f"Eccentric anomaly: {E:.2f} rad")
+    # print(f"True anomaly: {theta:.2f} rad")
+    # print(f"Radial distance: {r:.2f} km")
+    # print(f"Number of iterations: {no_iter}")
     # print(E, no_iter,theta,r)
+
+
+#    Input for 1c
 
     u = 398600
     a = 24000
@@ -128,9 +141,10 @@ if __name__ == "__main__":
     plt.plot(time_series,alt_series)
     plt.xlabel("Time (% of orbital period)")
     plt.ylabel("Altitude (km)")
+    plt.grid()
     plt.show()
     
-    plt.scatter(series_x,series_y)
+    plt.scatter(series_x,series_y,linewidths=0.5, s=1)
     circle = plt.Circle((x_center, y_center), R_E, color='green', fill=True)
     ax = plt.gca()  # Get the current axes
     ax.add_patch(circle)
@@ -138,11 +152,14 @@ if __name__ == "__main__":
     ax.set_ylim(-R_E-15000, R_E+15000)
     plt.gca().set_aspect('equal', adjustable='box')
     angles, theta1, theta2 = theta(e, p, a, R_E)
+    plt.xlabel("X (km)")
+    plt.ylabel("Y (km)")
+    plt.title("Orbit of the satellite")
     plt.show()
   
     eclipse_duration = eclipse_time(theta1, theta2, e, n,tp)
-    print(f"Periapsis eclipse duration: {eclipse_duration[0]} minutes, Apoapsis eclipse duration: {eclipse_duration[1]} minutes")
-    print(f"Periapsis angle: {theta1}, Apoapsis angle: {theta2}")
+    print(f"Periapsis eclipse duration: {eclipse_duration[0]:.2f} minutes, Apoapsis eclipse duration: {eclipse_duration[1]:.2f} minutes")
+    print(f"Periapsis angle: {theta1:.2f}, Apoapsis angle: {theta2:.2f}")
 
     # theta1= 140 *np.pi/180
     # theta2= 220 *np.pi/180
